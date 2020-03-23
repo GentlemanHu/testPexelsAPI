@@ -29,7 +29,7 @@ import com.google.gson.reflect.TypeToken;
  */
 public class App {
     Downloader downloader;
-    int hitsNum = 1, pageNum = 1,photoSize=0;
+    int hitsNum = 1, pageNum = 1, photoSize = 0;
     ArrayList<String> alist;
     ArrayList<String> blist = new ArrayList<String>();
     Data dt;
@@ -38,9 +38,22 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
-        App ap = new App();
+        // App ap = new App();
+        if (args.length != 0)
+            switch (args[0]) {
+            case "-k":
+                long start = System.currentTimeMillis();
+                XmlParser.getXMLData(args[1]);
+                XmlParser.parseXML(XmlParser.filepath);
+                long stop = System.currentTimeMillis();
+                System.out.println("大概耗时:"+(stop-start)+"ms");
+                break;
+            default:
+                System.out.println("指令格式：-k [keywords]");
+                break;
+            }
 
-        ap.getMany(2, 1, 10);
+        // ap.getMany(2, 1, 10);
 
     }
 
@@ -48,10 +61,11 @@ public class App {
     public void getPexelsJson(int pageNum) {
         try {
             long startTime = System.currentTimeMillis();
-            //alist每次都创建新对象，只输出每页
+            // alist每次都创建新对象，只输出每页
             alist = new ArrayList<String>();
-            //获取排行 (https://api.pexels.com/v1/curated?)替换到 tword 为止.每页80个
-            //搜索(https://api.pexels.com/v1/search?query=" + fword + "+" + sword + "+" + tword)
+            // 获取排行 (https://api.pexels.com/v1/curated?)替换到 tword 为止.每页80个
+            // 搜索(https://api.pexels.com/v1/search?query=" + fword + "+" + sword + "+" +
+            // tword)
             jdata = Jsoup
                     .connect("https://api.pexels.com/v1/search?query=" + fword + "+" + sword + "+" + tword + "+"
                             + "&per_page=80&page=" + pageNum)
@@ -67,9 +81,9 @@ public class App {
                 System.out.println(replaceUrl(photo.url));
                 System.out.println(photo.url);
                 System.out.println(photo.src.original);
-                //链接保存在alist中，输出每页链接
+                // 链接保存在alist中，输出每页链接
                 alist.add(photo.src.original);
-                //每页链接都保存在blist中
+                // 每页链接都保存在blist中
                 blist.add(photo.src.original);
                 System.out.println("\n");
             }
@@ -77,7 +91,7 @@ public class App {
             System.out.println("本页共" + pData.photos.size() + "条");
             // output txt
             downloader = new Downloader();
-            downloader.outUrl2Txt(alist, pageNum,1);
+            downloader.outUrl2Txt(alist, pageNum, 1);
 
             System.out.println("url输出文件为:" + "\"" + pageNum + ".txt" + "\"");
             long stopTime = System.currentTimeMillis();
@@ -94,9 +108,9 @@ public class App {
 
             long startTime = System.currentTimeMillis();
             alist = new ArrayList<String>();
-            data = Jsoup.connect(
-                    "https://pixabay.com/api/?key=4749918-8b58676efa31632352d97594d&q="+fword + "+" + sword + "+" + tword+"&image_type=photo&per_page=100&page="
-                            + pageNum)
+            data = Jsoup
+                    .connect("https://pixabay.com/api/?key=4749918-8b58676efa31632352d97594d&q=" + fword + "+" + sword
+                            + "+" + tword + "&image_type=photo&per_page=100&page=" + pageNum)
                     .ignoreContentType(true).execute().body();
 
             Gson gson = new Gson();
@@ -177,10 +191,10 @@ public class App {
                     e.printStackTrace();
                 }
             }
-            //输出所有链接在一个文件
+            // 输出所有链接在一个文件
             downloader = new Downloader();
-            downloader.outUrl2Txt(blist,999,1,realPageStart+"-"+stop+"页最终文件");
-            System.out.println("总的url输出文件为:" + "\"" + realPageStart+"-"+stop +"最终文件"+ ".txt" + "\"");
+            downloader.outUrl2Txt(blist, 999, 1, realPageStart + "-" + stop + "页最终文件");
+            System.out.println("总的url输出文件为:" + "\"" + realPageStart + "-" + stop + "最终文件" + ".txt" + "\"");
             System.out.println("\n");
             System.out.println("总共" + photoSize + "条");
             long stopTime = System.currentTimeMillis();

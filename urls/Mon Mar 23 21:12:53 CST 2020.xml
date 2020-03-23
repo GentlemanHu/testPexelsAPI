@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:torznab="http://torznab.com/schemas/2015/feed" version="1.0">
+  <channel>
+    <atom:link href="http://15.165.115.215:52828/" rel="self" type="application/rss+xml"/>
+    <title>RARBG</title>
+    <description>RARBG is a Public torrent site for MOVIES / TV / GENERAL</description>
+    <link>https://rarbg.to/</link>
+    <language>en-us</language>
+    <category>search</category>
+    <image>
+      <url>http://15.165.115.215:52828/logos/rarbg.png</url>
+      <title>RARBG</title>
+      <link>https://rarbg.to/</link>
+      <description>RARBG</description>
+    </image>
+  </channel>
+</rss>

@@ -1,11 +1,13 @@
 com/hu/scraper/App$PData$photo.class
 com/hu/scraper/TheDemo.class
-com/hu/scraper/App$Data$hit.class
-com/hu/scraper/App$Data.class
 com/hu/scraper/GUI.class
 com/hu/scraper/SOP.class
-com/hu/scraper/TestThread.class
 com/hu/scraper/Downloader.class
+com/hu/scraper/ObjectXML.class
+com/hu/scraper/App$Data$hit.class
+com/hu/scraper/XmlParser.class
+com/hu/scraper/App$Data.class
 com/hu/scraper/App$PData.class
+com/hu/scraper/TestThread.class
 com/hu/scraper/App$PData$Object.class
 com/hu/scraper/App.class
