@@ -38,6 +38,7 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
+        XmlParser.readConfig();
         // App ap = new App();
         if (args.length != 0)
             switch (args[0]) {

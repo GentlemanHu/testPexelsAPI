@@ -2,6 +2,7 @@ package com.hu.scraper;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,16 +26,29 @@ public class XmlParser {
       static SAXReader reader;
       static Calendar calendar = Calendar.getInstance();
       static String filepath = "";
-      static String key;
-
+      static String key,apikey="";
+      
       public XmlParser() {
       }
-
+      //read api config
+      public static void readConfig(){
+            try{
+                  FileReader reader = new FileReader("../api.config");
+                  char[] buf = new char[32];
+                  int read;
+                  while ((read=reader.read(buf))!=-1) {
+                        String str = new String(buf,0,read);
+                        apikey+=str;
+                  }
+                  reader.close();
+                  System.out.println(apikey);
+            }catch(Exception e){}
+      }
       public static String getXMLData(String key) {
             XmlParser.key = key;
             try {
                   xmlString = Jsoup.connect(
-                              ("http://15.165.115.215:52828/api/v2.0/indexers/rarbg/results/torznab/api?apikey=pztg874m7kb3hpbhskbxz7pea5wi0rcz&t=search&cat=&q="
+                              ("https://my-jackett.herokuapp.com/api/v2.0/indexers/rarbg/results/torznab/api?apikey="+apikey+"&t=search&cat=&q="
                                           + key))
                               .ignoreContentType(true).execute().body();
                   Document document = DocumentHelper.parseText(xmlString);
