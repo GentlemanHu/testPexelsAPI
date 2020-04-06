@@ -83,7 +83,7 @@ public class XmlParser {
                         Iterator<Element> esu = e1.elementIterator();
                         while (esu.hasNext()) {
                               Element ee = esu.next();
-                              System.out.println(ee.getName());
+                              //System.out.println(ee.getName());
 
                               if ("item".equals(ee.getName())) {
                                     if (ee.elementText("guid").matches("(.*)1080(.*)")) {

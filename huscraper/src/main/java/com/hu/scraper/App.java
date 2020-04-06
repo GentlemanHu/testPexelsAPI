@@ -1,5 +1,7 @@
 package com.hu.scraper;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,7 @@ public class App {
     Data dt;
     PData pData;
     String data, jdata, fword = "sexy", sword = "blonde", tword = "blonde";
+    static ArrayList<String> keylist = new ArrayList<String>();
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
@@ -47,15 +50,61 @@ public class App {
                 XmlParser.getXMLData(args[1]);
                 XmlParser.parseXML(XmlParser.filepath);
                 long stop = System.currentTimeMillis();
-                System.out.println("大概耗时:"+(stop-start)+"ms");
+                System.out.println("大概耗时:" + (stop - start) + "ms");
+                break;
+            case "-m":
+                getMultiFromFile(args[1]);
+                parMultiKey(keylist);
                 break;
             default:
-                System.out.println("指令格式：-k [keywords]");
+                System.out.println("指令格式:\n-k [keywords] \n-m [multiKeywords txt file path]");
                 break;
             }
-
+        if (args.length == 0) {
+            System.out.println("指令格式:\n-k [keywords] \n-m [multiKeywords txt file path]");
+        }
         // ap.getMany(2, 1, 10);
 
+    }
+
+    public static void parMultiKey(ArrayList<String> list) {
+        System.out.println("总共解析:" + list.size() + "个关键字，请耐心等待，喝杯咖啡~");
+        int index = 1;
+        long totaltime = 0;
+        for (String string : list) {
+            long start = System.currentTimeMillis();
+            XmlParser.getXMLData(string);
+            XmlParser.parseXML(XmlParser.filepath);
+            long stop = System.currentTimeMillis();
+            System.out.println("第" + index + "个解析完毕--" + "大概耗时:" + (stop - start) + "ms");
+            totaltime += (stop - start);
+            index++;
+            try {
+                Thread.sleep(300);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+        System.out.println("-----------\n-----------");
+        System.out.println("全部解析完毕，共耗时"+(totaltime/1000)+"s,可以可以666~~~");
+    }
+
+    public static ArrayList<String> getMultiFromFile(String path) {
+        try {
+            FileInputStream fis = new FileInputStream(path);
+            InputStreamReader reader = new InputStreamReader(fis);
+            BufferedReader buf = new BufferedReader(reader);
+
+            String tmp;
+            while ((tmp = buf.readLine()) != null) {
+                keylist.add(tmp);
+                System.out.println(tmp);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        return keylist;
     }
 
     // Another pexels API to get json
