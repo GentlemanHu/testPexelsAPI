@@ -1,11 +1,14 @@
 package com.hu.scraper;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -26,30 +29,46 @@ public class XmlParser {
       static SAXReader reader;
       static Calendar calendar = Calendar.getInstance();
       static String filepath = "";
-      static String key,apikey="";
-      
+      static String key, apikey = "", hostname = "";
+
       public XmlParser() {
       }
-      //read api config
-      public static void readConfig(){
-            try{
-                  FileReader reader = new FileReader("../api.config");
-                  char[] buf = new char[32];
-                  int read;
-                  while ((read=reader.read(buf))!=-1) {
-                        String str = new String(buf,0,read);
-                        apikey+=str;
+
+      // read api config
+      public static void readConfig() {
+            try {
+                  try {
+                        FileInputStream fis = new FileInputStream("config");
+                        InputStreamReader reader = new InputStreamReader(fis);
+                        BufferedReader buf = new BufferedReader(reader);
+
+                        String tmp;
+                        while ((tmp = buf.readLine()) != null) {
+                              if (tmp.contains("hostname")) {
+                                    String[] tmpStrings = tmp.split("=");
+                                    hostname = tmpStrings[1].replaceAll("\"", "");
+                              }
+                              if (tmp.contains("api")) {
+                                    String[] tmpStrings = tmp.split("=");
+                                    apikey = tmpStrings[1].replaceAll("\"", "");
+                              }
+                              System.out.println(tmp);
+                        }
+                  } catch (Exception e) {
+                        // TODO: handle exception
                   }
-                  reader.close();
-                  System.out.println(apikey);
-            }catch(Exception e){}
+                  //System.out.println(apikey);
+                  //System.out.println(hostname);
+            } catch (Exception e) {
+            }
       }
+
       public static String getXMLData(String key) {
             XmlParser.key = key;
             try {
-                  xmlString = Jsoup.connect(
-                              ("https://my-jackett.herokuapp.com/api/v2.0/indexers/rarbg/results/torznab/api?apikey="+apikey+"&t=search&cat=&q="
-                                          + key))
+                  xmlString = Jsoup
+                              .connect(("http://" + hostname + "/api/v2.0/indexers/rarbg/results/torznab/api?apikey="
+                                          + apikey + "&t=search&cat=&q=" + key))
                               .ignoreContentType(true).execute().body();
                   Document document = DocumentHelper.parseText(xmlString);
                   filepath = "../urls/" + calendar.getTime() + ".xml";
@@ -83,7 +102,7 @@ public class XmlParser {
                         Iterator<Element> esu = e1.elementIterator();
                         while (esu.hasNext()) {
                               Element ee = esu.next();
-                              //System.out.println(ee.getName());
+                              // System.out.println(ee.getName());
 
                               if ("item".equals(ee.getName())) {
                                     if (ee.elementText("guid").matches("(.*)1080(.*)")) {
@@ -93,7 +112,10 @@ public class XmlParser {
                                                 times = 0;
                                                 System.out.println(saveString);
                                                 FileOutputStream fOutputStream = new FileOutputStream(
-                                                            "../urls/rarbg/" +key+ calendar.get(Calendar.DAY_OF_MONTH)+" "+calendar.get(Calendar.HOUR_OF_DAY)+" "+calendar.get(Calendar.MINUTE)+" "+calendar.get(Calendar.SECOND)+ ".txt");
+                                                            "../urls/rarbg/" + key + calendar.get(Calendar.DAY_OF_MONTH)
+                                                                        + " " + calendar.get(Calendar.HOUR_OF_DAY) + " "
+                                                                        + calendar.get(Calendar.MINUTE) + " "
+                                                                        + calendar.get(Calendar.SECOND) + ".txt");
                                                 fOutputStream.write(saveString.getBytes());
                                                 fOutputStream.close();
                                                 System.out.println("生成成功");
